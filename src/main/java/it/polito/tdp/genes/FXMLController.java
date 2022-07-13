@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.genes.model.Model;
+import it.polito.tdp.genes.model.Vicini;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -27,7 +28,7 @@ public class FXMLController {
     private Button btnRicerca;
 
     @FXML
-    private ComboBox<?> boxLocalizzazione;
+    private ComboBox<String> boxLocalizzazione;
 
     @FXML
     private TextArea txtResult;
@@ -39,6 +40,20 @@ public class FXMLController {
 
     @FXML
     void doStatistiche(ActionEvent event) {
+    	
+    	if(!(boxLocalizzazione.getValue()==null))
+    	{
+    		for(Vicini v : this.model.getVerticiConnessi(boxLocalizzazione.getValue()))
+    		{
+    			txtResult.appendText(v.toString());
+    		}
+    		
+    	}
+    	else
+    	{
+    		txtResult.appendText("Bisogna selezionare una localizzazione!\n");
+    		return;
+    	}
 
     }
 
@@ -53,5 +68,13 @@ public class FXMLController {
 
 	public void setModel(Model model) {
 		this.model = model;
+		this.model.creaGrafo();
+		txtResult.appendText("Grafo creato con successo\n");
+		txtResult.appendText("#Vertici: "+ this.model.getNVertici()+"\n");
+		txtResult.appendText("#Archi: "+ this.model.getNArchi()+"\n");
+		for(String s: this.model.getVertici())
+		{
+			boxLocalizzazione.getItems().add(s);
+		}
 	}
 }
